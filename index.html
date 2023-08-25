@@ -1,88 +1,129 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Page Title</title>
+    <meta charset="UTF-8">
+    <title>Page Title</title>
 </head>
 <body>
-  <script>
-    function getComputerChoice() {
-        const num = Math.floor(Math.random() * 3);
-        let choice;
-        switch (num) {
-            case 0:
-                choice = "Rock";
-                break;
-            case 1:
-                choice = "Paper";
-                break;
-            default:
-                choice = "Scissors";
+    <button class="rock">Rock</button>
+    <button class="paper">Paper</button>
+    <button class="scissors">Scissors</button>
+
+    <div class="results">
+        <table>
+            <tr>
+                <th>Player Score</th>
+                <th>Computer Score</th>
+            </tr>
+            <tr>
+                <td class="Player">0</td>
+                <td class="Computer">0</td>
+            </tr>
+            <tr>
+                <td class="winner"></td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        function getComputerChoice() {
+            const num = Math.floor(Math.random() * 3);
+            let choice;
+            switch (num) {
+                case 0:
+                    choice = "Rock";
+                    break;
+                case 1:
+                    choice = "Paper";
+                    break;
+                default:
+                    choice = "Scissors";
+            }
+            return choice;
         }
-        return choice;
-    }
 
-    function capitalize(string) {
-        return `${string[0].toUpperCase()}${string.slice(1).toLowerCase()}`;
-    }
+        function capitalize(string) {
+            return `${string[0].toUpperCase()}${string.slice(1).toLowerCase()}`;
+        }
 
-    function playRound(playerSelection, computerSelection) {
-        const player = capitalize(playerSelection);
-        const computer = capitalize(computerSelection);
-        let winner;
-        if (player == "Rock") {
-            if (computer == "Rock") {
-                winner = null;
-            } else if (computer == "Paper") {
-                winner = computer;
-            } else if (computer == "Scissors") {
-                winner = player;
+        function playRound(playerSelection, computerSelection) {
+            const player = capitalize(playerSelection);
+            const computer = capitalize(computerSelection);
+            let winner;
+            if (player == "Rock") {
+                if (computer == "Rock") {
+                    winner = null;
+                } else if (computer == "Paper") {
+                    winner = computer;
+                } else if (computer == "Scissors") {
+                    winner = player;
+                } else {
+                    // Error
+                    return;
+                }
+            } else if (player == "Paper") {
+                if (computer == "Rock") {
+                    winner = player;
+                } else if (computer == "Paper") {
+                    winner = null;
+                } else if (computer == "Scissors") {
+                    winner = computer;
+                } else {
+                    // Error
+                    return;
+                }
+            } else if (player == "Scissors") {
+                if (computer == "Rock") {
+                    winner = computer;
+                } else if (computer == "Paper") {
+                    winner = player;
+                } else if (computer == "Scissors") {
+                    winner = null;
+                } else {
+                    // Error
+                    return;
+                }
             } else {
-                // Error
                 return;
             }
-        } else if (player == "Paper") {
-            if (computer == "Rock") {
-                winner = player;
-            } else if (computer == "Paper") {
-                winner = null;
-            } else if (computer == "Scissors") {
-                winner = computer;
+            // Return the winner
+            if (winner == player) {
+                return "Player";
+            } else if (winner == computer) {
+                return "Computer";
             } else {
-                // Error
-                return;
+                return "Tie";
             }
-        } else if (player == "Scissors") {
-            if (computer == "Rock") {
-                winner = computer;
-            } else if (computer == "Paper") {
-                winner = player;
-            } else if (computer == "Scissors") {
-                winner = null;
-            } else {
-                // Error
-                return;
-            }
-        } else {
-            return;
         }
-        // Return the winner
-        if (winner == player) {
-            return `You Win! ${player} beats ${computer}`;
-        } else if (winner == computer) {
-            return `You Lose! ${computer} beats ${player}`;
-        } else {
-            return "It's a tie!";
-        }
-    }
 
-    function game() {
-        let playerChoice;
-        for (i = 0; i < 5; i++) {
-            playerChoice = prompt("Choose Rock, Paper, or Scissors");
-            console.log(playRound(playerChoice, getComputerChoice()));
+        function playGame(e) {
+            const choice = e.target.className;
+            const winner = playRound(choice, getComputerChoice());
+            const done = displayResults("." + winner);
+            if (done === true) {
+                announceWinner(winner);
+            }
         }
-    }
-  </script>
+
+        function displayResults(winner) {
+            if (winner === ".Tie") return;
+            const winnerElement = document.querySelector(winner);
+            winnerElement.textContent = String(Number(winnerElement.textContent) + 1);
+            if (winnerElement.textContent === "5") {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function announceWinner(winner) {
+            const winnerElement = document.querySelector('.winner');
+            winnerElement.textContent = `${winner} wins!`;
+        }
+
+        const buttons = document.querySelectorAll('button');
+        console.log(buttons);
+        buttons.forEach(button => button.addEventListener('click', playGame));
+    </script>
 </body>
 </html>
